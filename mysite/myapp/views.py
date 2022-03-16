@@ -2,7 +2,7 @@ from urllib import response
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout
 from rest_framework.views import APIView
 
 
@@ -11,7 +11,7 @@ class login(APIView):
     def post(self,request):
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=username, password=password,backend='django.contrib.auth.backends.ModelBackend')
         if user is not None:
             auth_login(request, user)
             request.session.set_expiry(86400)
@@ -27,7 +27,19 @@ class login(APIView):
 class check_user(APIView):
     def get(self,request):
         if request.user.is_authenticated:
-            print (user.id)
+            print (request.user.id)
+            response = f"You are {request.user}"
         else:
             response = "you aren't logged in"
-            return Response(response)
+        return Response(response)
+
+class logout_user(APIView):
+    def get(self,request):
+        if request.user.is_authenticated:
+            response = f"you are trying to logout,{request.user}"
+            logout(request)
+            response += " + logged you out, succesfully"
+        else:
+            response = "you werent logged in."
+        return Response(response)
+        
