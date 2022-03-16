@@ -3,8 +3,16 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate, login as auth_login, logout
-from rest_framework.views import APIView
+from .views import APIView
+from . models import *
+from . serializers import *
 
+
+class test(APIView):
+    def get(self,request):
+        data = Module.objects.all()
+        serializer = ModuleSerializer(data, many=True)
+        return Response(serializer.data)
 
 
 class login(APIView):
