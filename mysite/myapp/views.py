@@ -8,28 +8,32 @@ from . models import *
 from . serializers import *
 from django.db import connection
 
-# class view(APIView):
-#     def get(self,request):
-#         staff = Professors.objects.all().values('id').values_list('id',flat=True)  # get list of all staff IDs
-#         list = []
-#         for mod_professor in staff: # for each memember of staff
-#             data = Ratings.objects.filter(Professor=mod_professor) # find the ratings in the ratings table that apply to that member of staff
-#             if not data: # if they have no ratings do nothing
-#                 print("none")
-#             else: # if they have ratings
-#                 all_ratings = 0
-#                 rating_count = 0
-#                 for rating in data: # for each rating they have 
-#                     all_ratings += rating['rating'] # add the ratings to variable (need to convert to int)
-#                     rating_count = rating_count+1 # increase ratings count
-#                 average = all_ratings/rating_count # calculate their average rating
-#                 final_data = (mod_professor['name']+average)  # store the professors name and average rating
-#                 list.append(final_data) # add proffessors name and average rating to list
-#         serializer = RatingsSerializer(staff, many=True) # serialize list (may need to make new serializer class for this)
-
-#         return Response(serializer.data) # return response
-class rating(APIView):
+class average(APIView):
     def get(self,request):
+        mock_professor_id = 'j'
+        mock_module_code = 'aaa'
+        teacher = Professor.objects.raw("SELECT * FROM myapp_professor WHERE initals = %s",[mock_professor_id])
+        module= Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s",[mock_module_code])       
+        teacher_id = 0
+        module_id = 0
+        for x in module:
+            module_id = x.id
+        
+        for x in teacher:
+            teacher_id = x.id
+        
+        rating = Rating.objects.raw("SELECT * FROM myapp_rating WHERE module_id = %s AND teachers_id = %s",[module_id,teacher_id])
+        print(len(rating))
+        average_math = 0
+        for x in rating:
+            average_math += x.rating
+        
+        average_math /= len(rating)
+        print(average_math)
+        return Response("average pageee")
+
+class rating(APIView):
+    def get(self,request): #TODO: change this to a post request with working data
         #we need to first retrieve, rating, if it doesn't exist make it
         #to do this we need to get the module id since it's rated for that module using the details and WHERE
         #then we need to make an average
@@ -39,7 +43,13 @@ class rating(APIView):
         mock_year = '2020' 
         mock_semester = '2'
         mock_rating = '2'
+        mock_rating = float(mock_rating)
         
+        if(mock_rating.is_integer()):
+            print(f'do nothing: {mock_rating}')
+            mock_rating = str(mock_rating)
+        else:
+            if(mock_rating )
         teacher = Professor.objects.raw("SELECT * FROM myapp_professor WHERE initals = %s",[mock_professor_id])
         module= Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s AND year = %s AND semester = %s",[mock_module_code,mock_year,mock_semester])        
         
