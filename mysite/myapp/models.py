@@ -29,4 +29,3 @@ class Rating(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
     teachers = models.ForeignKey(Professor, on_delete=models.CASCADE)
     
-

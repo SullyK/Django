@@ -5,7 +5,7 @@ from . models import Professor, Module
 class ProfessorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Professor
-        fields = ['id']
+        fields = ['id'] # sort this out later... need maybe an all and this custom one.
 
 class ModuleSerializer(serializers.ModelSerializer):
     class Meta:

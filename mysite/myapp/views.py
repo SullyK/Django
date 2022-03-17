@@ -31,10 +31,18 @@ from . serializers import *
 class test(APIView):
     def get(self,request):
         # staff = Professor.objects.all()
-        data = [] 
+        data = []
         for p in Professor.objects.raw('SELECT * FROM myapp_professor'):
-            print(p.id)
-            data.append(p)
+            # print(p.id)
+            # for x in p.id:
+            returned = Rating.objects.raw('SELECT * FROM myapp_rating WHERE id = %s', [p.id])
+            for rating in returned:
+                print(rating.module.name)
+                print(rating.teachers.name)
+                print(rating.rating)
+                print('---------------------')
+            
+            
         
      # get list of all staff IDs
         # print(staff)
