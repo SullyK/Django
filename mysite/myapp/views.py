@@ -30,17 +30,53 @@ from . serializers import *
 
 class test(APIView):
     def get(self,request):
-        # staff = Professor.objects.all()
-        data = []
-        for p in Professor.objects.raw('SELECT * FROM myapp_professor'):
-            # print(p.id)
-            # for x in p.id:
-            returned = Rating.objects.raw('SELECT * FROM myapp_rating WHERE id = %s', [p.id])
-            for rating in returned:
-                print(rating.module.name)
-                print(rating.teachers.name)
-                print(rating.rating)
-                print('---------------------')
+        mock_prof_id = 'j' #id for professor
+        mock_mod_id = 'comp'
+        pro_id = Professor.objects.raw('SELECT id FROM myapp_professor WHERE initals = %s',[mock_prof_id])
+        pro_name = 0
+        mod_id = Module.objects.raw('SELECT id FROM myapp_module WHERE code = %s',[mock_mod_id])
+        mod_name = 0 
+        mod_code = 0
+        pro_test = 0
+        mod_test = 0
+        pro_initals = 0
+        for x in pro_id:
+            pro_test = x.id
+            pro_name = x.name
+            pro_initals = x.initals
+        for x in mod_id:
+            mod_test = x.id
+            mod_name = x.name
+            mod_code =x.code
+        
+
+
+        # print(p.id)
+        # for x in p.id:
+        print(f"professor id: {pro_test}")
+        print(f"module id: {mod_test}")
+
+        returned = Rating.objects.raw('SELECT * FROM myapp_rating WHERE module_id = %s AND teachers_id = %s', [mod_test,pro_test] )
+        for x in returned:
+            print(x.rating)
+            reponse = {f"The rating of {pro_name} ({pro_initals}) in module {mod_name} ({mod_code}) is {pro_test}"}
+        # for x in returned:
+        #     print(x)
+        # for x in returned:
+        #     if(mock_prof_id == x.teachers.initals and mock_module == x.module.id):
+        #         print(f'{x.teachers.initals} teaching {x.module.id} a has rating of {x.rating}')
+        # if len((returned)) > 1:
+        #     print("error: too many returned results from query...")
+        # elif(len((returned) < 1)):
+        #     print("error: You need at least 1 returned result from the DB")
+        # probably should do try and assert exception handling 
+        # print(returned)
+
+            # for rating in returned:
+            #     print(rating.module.name)
+            #     print(rating.teachers.name)
+            #     print(rating.rating)
+            #     print('---------------------')
             
             
         
@@ -48,8 +84,8 @@ class test(APIView):
         # print(staff)
         # list = []
 
-        serializer = ProfessorSerializer(data, many=True)
-        return Response(serializer.data)
+        # serializer = ProfessorSerializer(data, many=True)
+        return Response(reponse)
 
 
 class login(APIView):
