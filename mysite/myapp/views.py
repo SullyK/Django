@@ -1,4 +1,3 @@
-from ctypes import WinDLL
 from urllib import response
 from django.shortcuts import render
 from rest_framework.response import Response
@@ -58,16 +57,15 @@ class rating(APIView):
         # so now we got the module and professor name id
         # we need to query the db in rating and check if they exist.
 
-        data = Rating.objects.raw("SELECT * FROM myapp_rating WHERE module_id = %s AND teachers_id = %s", [module_id,teacher_id])
 
-        # if this is 0, then it doesn't exist, we should make a new one and research
-        if len(data) == 0:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "INSERT INTO myapp_rating(rating, module_id, teachers_id) VALUES (%s, %s, %s)", [mock_rating,module_id,teacher_id]
-                    )
-                
-
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO myapp_rating(rating, module_id, teachers_id) VALUES (%s, %s, %s)", [mock_rating,module_id,teacher_id]
+                )
+        
+        # # get the avg of these
+        # data = Rating.objects.raw("SELECT * FROM myapp_rating WHERE module_id = %s AND teachers_id = %s", [module_id,teacher_id])
+        # print(f"rows returned: {len(data)}")
 
 
         
