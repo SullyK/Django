@@ -1,3 +1,4 @@
+from ctypes import WinDLL
 from urllib import response
 from django.shortcuts import render
 from rest_framework.response import Response
@@ -6,6 +7,7 @@ from django.contrib.auth import authenticate, login as auth_login, logout
 from rest_framework.views import APIView
 from . models import *
 from . serializers import *
+from django.db import connection
 
 # class view(APIView):
 #     def get(self,request):
@@ -27,6 +29,50 @@ from . serializers import *
 #         serializer = RatingsSerializer(staff, many=True) # serialize list (may need to make new serializer class for this)
 
 #         return Response(serializer.data) # return response
+class rating(APIView):
+    def get(self,request):
+        #we need to first retrieve, rating, if it doesn't exist make it
+        #to do this we need to get the module id since it's rated for that module using the details and WHERE
+        #then we need to make an average
+        #finally put that data in
+        mock_professor_id = 'j'
+        mock_module_code = 'aaa'
+        mock_year = '2020' 
+        mock_semester = '2'
+        mock_rating = '2'
+        
+        teacher = Professor.objects.raw("SELECT * FROM myapp_professor WHERE initals = %s",[mock_professor_id])
+        module= Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s AND year = %s AND semester = %s",[mock_module_code,mock_year,mock_semester])        
+        
+        teacher_id = 0
+        module_id = 0
+        for x in teacher:
+            teacher_id = x.id
+            print(f"teacher_id = {x.id}")
+        
+        for x in module:
+            module_id = x.id
+            print((f"module_id = {x.id}"))
+        
+
+        # so now we got the module and professor name id
+        # we need to query the db in rating and check if they exist.
+
+        data = Rating.objects.raw("SELECT * FROM myapp_rating WHERE module_id = %s AND teachers_id = %s", [module_id,teacher_id])
+
+        # if this is 0, then it doesn't exist, we should make a new one and research
+        if len(data) == 0:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO myapp_rating(rating, module_id, teachers_id) VALUES (%s, %s, %s)", [mock_rating,module_id,teacher_id]
+                    )
+                
+
+
+
+        
+        return Response("sdfsdfsdfsd")
+
 
 class test(APIView):
     def get(self,request):
