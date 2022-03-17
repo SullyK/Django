@@ -3,15 +3,44 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate, login as auth_login, logout
-from .views import APIView
+from rest_framework.views import APIView
 from . models import *
 from . serializers import *
 
+# class view(APIView):
+#     def get(self,request):
+#         staff = Professors.objects.all().values('id').values_list('id',flat=True)  # get list of all staff IDs
+#         list = []
+#         for mod_professor in staff: # for each memember of staff
+#             data = Ratings.objects.filter(Professor=mod_professor) # find the ratings in the ratings table that apply to that member of staff
+#             if not data: # if they have no ratings do nothing
+#                 print("none")
+#             else: # if they have ratings
+#                 all_ratings = 0
+#                 rating_count = 0
+#                 for rating in data: # for each rating they have 
+#                     all_ratings += rating['rating'] # add the ratings to variable (need to convert to int)
+#                     rating_count = rating_count+1 # increase ratings count
+#                 average = all_ratings/rating_count # calculate their average rating
+#                 final_data = (mod_professor['name']+average)  # store the professors name and average rating
+#                 list.append(final_data) # add proffessors name and average rating to list
+#         serializer = RatingsSerializer(staff, many=True) # serialize list (may need to make new serializer class for this)
+
+#         return Response(serializer.data) # return response
 
 class test(APIView):
     def get(self,request):
-        data = Module.objects.all()
-        serializer = ModuleSerializer(data, many=True)
+        # staff = Professor.objects.all()
+        data = [] 
+        for p in Professor.objects.raw('SELECT * FROM myapp_professor'):
+            print(p.id)
+            data.append(p)
+        
+     # get list of all staff IDs
+        # print(staff)
+        # list = []
+
+        serializer = ProfessorSerializer(data, many=True)
         return Response(serializer.data)
 
 
@@ -50,4 +79,4 @@ class logout_user(APIView):
         else:
             response = "you werent logged in."
         return Response(response)
-        
+    
