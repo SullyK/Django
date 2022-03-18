@@ -9,6 +9,28 @@ from rest_framework.views import APIView
 from . models import *
 from . serializers import *
 from django.db import connection
+from django.contrib.auth.models import User
+
+
+class register(APIView):
+    def post(self,request):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        email = request.POST.get('email')
+        check_username = User.objects.raw("SELECT * from auth_user WHERE username = %s", [username])
+        check_email = User.objects.raw("SELECT * from auth_user WHERE email = %s", [email])
+
+        if (len(check_username) != 0):
+            return Response("Username exists in DB")
+
+        if(len(check_email) != 0):
+            return Response("emails exists in DB")
+
+        # Make account as email and username doesn't exist in db
+        user = User.objects.create_user(username, password, email)
+
+        return Response("Account made succesfully")
+
 
 
 

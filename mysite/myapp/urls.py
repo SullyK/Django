@@ -11,6 +11,7 @@ urlpatterns = [
     path('average', average.as_view()),
     path('list', list.as_view()),
     path('view', view.as_view()),
+    path('register', register.as_view()),
 
     # path('check', views.check_login, name='check_login'),
     # path('accounts/', include('django.contrib.auth.urls'))
