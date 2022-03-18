@@ -1,3 +1,4 @@
+from sys import modules
 from urllib import response
 from django.shortcuts import render
 from rest_framework.response import Response
@@ -7,6 +8,26 @@ from rest_framework.views import APIView
 from . models import *
 from . serializers import *
 from django.db import connection
+
+
+
+
+class list(APIView):
+    def get(self,request):
+        returned_rows = Module.objects.all()
+        print(returned_rows)
+        for x in returned_rows:
+            print(x.name)
+            print(x.code)
+            print(x.year)
+            print(x.semester)
+            stored = x.teachers.all()
+            for z in stored:
+                print(z.name)
+                print(z.initals)
+            print("------------------------")
+                
+        return Response("list page")
 
 class average(APIView):
     def get(self,request):
