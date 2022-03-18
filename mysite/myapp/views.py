@@ -1,3 +1,4 @@
+from asyncio import ThreadedChildWatcher
 from sys import modules
 from urllib import response
 from django.shortcuts import render
@@ -28,6 +29,35 @@ class list(APIView):
             print("------------------------")
                 
         return Response("list page")
+
+class view(APIView):
+    def get(self, request):
+        teachers_id = 0
+        avg = 0
+        teacher = Professor.objects.raw("SELECT * FROM myapp_professor")
+        for i in teacher: 
+            teachers_id = i.id
+            prof_name = i.name
+            rating= Rating.objects.raw("SELECT * FROM myapp_rating WHERE teachers_id = %s",[teachers_id])  
+            print('--------------------')   
+            for a in rating:
+                avg += a.rating
+            
+            if(len(rating) == 0):
+                continue
+            avg /= len(rating)
+            avg = round(avg)
+            print(f"rating: {a.rating} for prof: {prof_name}")
+            avg = 0
+        # and names now
+        return Response("view page")
+
+
+
+
+        
+
+
 
 class average(APIView):
     def get(self,request):
