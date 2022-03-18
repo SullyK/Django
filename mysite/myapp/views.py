@@ -16,19 +16,26 @@ class average(APIView):
         module= Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s",[mock_module_code])       
         teacher_id = 0
         module_id = 0
-        for x in module:
-            module_id = x.id
-        
+        average_math = 0
+        total_rows = 0
+
         for x in teacher:
             teacher_id = x.id
+
+        for x in module:
+            module_id = x.id
+            print(f"Mod returned id: {module_id}")
+            rating = Rating.objects.raw("SELECT * FROM myapp_rating WHERE module_id = %s AND teachers_id = %s",[module_id,teacher_id])
+            print(f"rows = {len(rating)}")
+            total_rows += len(rating)
+            for i in rating:
+                average_math += i.rating
+
+
         
-        rating = Rating.objects.raw("SELECT * FROM myapp_rating WHERE module_id = %s AND teachers_id = %s",[module_id,teacher_id])
-        print(len(rating))
-        average_math = 0
-        for x in rating:
-            average_math += x.rating
         
         average_math /= len(rating)
+        average_math = round(average_math)
         print(average_math)
         return Response("average pageee")
 
@@ -41,15 +48,17 @@ class rating(APIView):
         mock_professor_id = 'j'
         mock_module_code = 'aaa'
         mock_year = '2020' 
-        mock_semester = '2'
-        mock_rating = '2'
+        mock_semester = '1'
+        mock_rating = '4'
         mock_rating = float(mock_rating)
         
+        # This shoudl convert it to the a float. If it's an integer, we will rewrite it as a string
         if(mock_rating.is_integer()):
             print(f'do nothing: {mock_rating}')
             mock_rating = str(mock_rating)
-        else:
-            if(mock_rating )
+        # else:
+        #     if(mock_rating )
+        
         teacher = Professor.objects.raw("SELECT * FROM myapp_professor WHERE initals = %s",[mock_professor_id])
         module= Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s AND year = %s AND semester = %s",[mock_module_code,mock_year,mock_semester])        
         
