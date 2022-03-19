@@ -1,5 +1,3 @@
-from asyncio import ThreadedChildWatcher
-from sys import modules
 from urllib import response
 from django.shortcuts import render
 from rest_framework.response import Response
@@ -10,7 +8,7 @@ from . models import *
 from . serializers import *
 from django.db import connection
 from django.contrib.auth.models import User
-
+from json import *
 
 class register(APIView):
     def post(self,request):
@@ -19,38 +17,49 @@ class register(APIView):
         email = request.POST.get('email')
         check_username = User.objects.raw("SELECT * from auth_user WHERE username = %s", [username])
         check_email = User.objects.raw("SELECT * from auth_user WHERE email = %s", [email])
+        #TODO: fix the email check, as it's not working apparently
 
         if (len(check_username) != 0):
-            return Response("Username exists in DB")
+            response = dumps("username already exists in database")
+            return Response(response)
 
         if(len(check_email) != 0):
-            return Response("emails exists in DB")
+            response = dumps("email already exists in database")
+            return Response(response)
+
 
         # Make account as email and username doesn't exist in db
         user = User.objects.create_user(username, password, email)
-
-        return Response("Account made succesfully")
-
-
-
+        user.save()
+        
+        
+        response = dumps("Account made succesfully")
+        return Response(response)
 
 
 class list(APIView):
     def get(self,request):
         returned_rows = Module.objects.all()
-        print(returned_rows)
+        string = ""
         for x in returned_rows:
-            print(x.name)
-            print(x.code)
-            print(x.year)
-            print(x.semester)
+            string += str(x.code)
+            string += ' '
+            string += str(x.name)
+            string += ' '
+            string += str(x.year)
+            string += ' '
+            string += str(x.semester)
+            string += ' '
             stored = x.teachers.all()
             for z in stored:
-                print(z.name)
-                print(z.initals)
-            print("------------------------")
-                
-        return Response("list page")
+                string += str(z.name)
+                string + ','
+                string += str(z.initals)
+            string += "\n"
+        
+        response = dumps(string)
+        print(response)
+        return Response(response)
 
 class view(APIView):
     def get(self, request):
