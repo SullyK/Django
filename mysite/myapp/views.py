@@ -8,7 +8,9 @@ from . models import *
 from . serializers import *
 from django.db import connection
 from django.contrib.auth.models import User
-from json import *
+import json
+import copy
+
 
 class register(APIView):
     def post(self,request):
@@ -39,27 +41,31 @@ class register(APIView):
 
 class list(APIView):
     def get(self,request):
+        list = []
+        dic = {}
+        counter = 0
+        mod_number = 0
         returned_rows = Module.objects.all()
-        string = ""
+        print(returned_rows)
         for x in returned_rows:
-            string += str(x.code)
-            string += ' '
-            string += str(x.name)
-            string += ' '
-            string += str(x.year)
-            string += ' '
-            string += str(x.semester)
-            string += ' '
+            dic['code'] = (x.code)
+            dic['name'] = (x.name)
+            dic['year'] = (x.year)
+            dic['semester'] = (x.semester)
             stored = x.teachers.all()
             for z in stored:
-                string += str(z.name)
-                string + ','
-                string += str(z.initals)
-            string += "\n"
+                dic[f'teachers {counter}'] = z.name
+                counter += 1 
+            list.append(copy.deepcopy(dic))
+            dic.clear()
+            mod_number += 1
+            counter = 0
         
-        response = dumps(string)
-        print(response)
-        return Response(response)
+        # a = json.dumps(list_of_dic)
+        # print(a)
+        print(type(list))
+        print(list)
+        return Response(list)
 
 class view(APIView):
     def get(self, request):
