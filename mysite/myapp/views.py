@@ -54,7 +54,8 @@ class list(APIView):
             dic['semester'] = (x.semester)
             stored = x.teachers.all()
             for z in stored:
-                dic[f'teachers {counter}'] = z.name
+                dic[f'teachersname {counter}'] = z.name
+                dic[f'teachersinit {counter}'] = z.initals
                 counter += 1 
             a.append(copy.deepcopy(dic))
             dic.clear()

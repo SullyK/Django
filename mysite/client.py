@@ -15,22 +15,25 @@ r = requests.get("http://127.0.0.1:8000/app/list")
 data = r.json()
 # print(data)
 # print(type(data))
-print('{:>0}  {:>9}  {:>20} {:>12} {:>12}'.format("Code", "Name", "Year", "Semester", "Taught By"))
+print('{:>0}  {:>5}  {:>18} {:>12} {:>12}'.format("Code", "Name", "Year", "Semester", "Taught By"))
 print('---------------------------------------------------------------')
 
 item = 0
 counter = 0
 for x in data:
-    print(f"{x['code']:10s} {x['name']:20s} {str(x['year']):10s} {str(x['semester']):10s}", end="", flush=True)
+    print(f"{x['code']:5s} {x['name']:20s} {str(x['year']):10s} {str(x['semester']):10s}", end="", flush=True)
 
     while True:
-        if f'teachers {counter}' not in x:
+        if f'teachersname {counter}' not in x:
             counter = 0
             item += 1
             print("\n---------------------------------------------------------------------------")
             break
         else:
-            print(f"{data[item]['teachers ' + str(counter)]:2s},", end="", flush=True)
+            if(counter > 0 ):
+                print(f",",end="", flush=True)
+            print(f"{data[item]['teachersname ' + str(counter)]:2s}", end="", flush=True)
+            print(f"({data[item]['teachersinit ' + str(counter)]:1s})", end="", flush=True)
             counter += 1
 
     # int += 1
