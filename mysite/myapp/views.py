@@ -22,11 +22,11 @@ class register(APIView):
         #TODO: fix the email check, as it's not working apparently
 
         if (len(check_username) != 0):
-            response = jsondumps("username already exists in database")
+            response = json.dumps("Error: Username already exists in database, please try again")
             return Response(response)
 
-        if(len(check_email) != 0):
-            response = jsondumps("email already exists in database")
+        if(len(check_email) != 0): #TODO: Fix this email checking logic.
+            response = json.dumps("Error: Email already exists in database, please try again")
             return Response(response)
 
 
@@ -263,10 +263,9 @@ class login(APIView):
         if user is not None:
             auth_login(request, user)
             request.session.set_expiry(86400)
-            response = "Logged in succesfully" 
-            print(user.id)
+            response = "Success" 
         else: 
-            response = "Login failed"
+            response = "Fail"
 
         response = json.dumps(response)
         print(type(response))
