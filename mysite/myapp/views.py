@@ -243,22 +243,24 @@ class login(APIView):
         if user is not None:
             auth_login(request, user)
             request.session.set_expiry(86400)
-            response = {"you are active": "brooo"}
+            response = "Logged in succesfully" 
             print(user.id)
         else: 
-            response = {"uffffff": "aaaaa"}
+            response = "Login failed"
 
+        response = json.dumps(response)
+        print(type(response))
         return Response(response)
-# curl --data "user/pass" http://127.0.0.1:8000/app/ | jq
 # test my login
 
 class check_user(APIView):
     def get(self,request):
         if request.user.is_authenticated:
             print (request.user.id)
-            response = f"You are {request.user}"
+            response = f"You are {request.id}"
         else:
             response = "you aren't logged in"
+        response = json.dumps(response)
         return Response(response)
 
 class logout_user(APIView):
@@ -269,5 +271,6 @@ class logout_user(APIView):
             response += " + logged you out, succesfully"
         else:
             response = "you werent logged in."
+        response = json.dumps(response)
         return Response(response)
     

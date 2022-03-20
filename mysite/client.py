@@ -2,7 +2,9 @@ from urllib import response
 import requests
 import json
 
+s = requests.Session()
 
+#Register
 
 # payload = {'username': 'cccadasasdassasfsdfdssdasdsing', 'password': 'examp22le', "email": "asdasd@gmail.com"}
 
@@ -11,40 +13,24 @@ import json
 # print(x[1:-1])
 
 
-r = requests.get("http://127.0.0.1:8000/app/list")
-data = r.json()
-# print(data)
-# print(type(data))
-print('{:>0}  {:>5}  {:>18} {:>12} {:>12}'.format("Code", "Name", "Year", "Semester", "Taught By"))
-print('---------------------------------------------------------------')
+#Login
 
-item = 0
-counter = 0
-for x in data:
-    print(f"{x['code']:5s} {x['name']:20s} {str(x['year']):10s} {str(x['semester']):10s}", end="", flush=True)
+# payload = {
+#     'username': 'sully',
+#     'password': 'left4dead2'
+# }
 
-    while True:
-        if f'teachersname {counter}' not in x:
-            counter = 0
-            item += 1
-            print("\n---------------------------------------------------------------------------")
-            break
-        else:
-            if(counter > 0 ):
-                print(f",",end="", flush=True)
-            print(f"{data[item]['teachersname ' + str(counter)]:2s}", end="", flush=True)
-            print(f"({data[item]['teachersinit ' + str(counter)]:1s})", end="", flush=True)
-            counter += 1
+# r = s.post("http://127.0.0.1:8000/app/login",data=payload)
+# cookies = dict(r.cookies)
+# x = json.loads(r.text)
+# print(x[1:-1])
 
-    # int += 1
 
-    # print(str(x['name']).ljust(3),end="", flush=True)
-    # print(str(x['year']).ljust(15),end="", flush=True)
-    # print(str(x['semester']).ljust(8*4))
+# # logout
 
-    # print(type(data))
-    # print(data)
-# print((data))
+# r = s.get("http://127.0.0.1:8000/app/logout_user",cookies=cookies)
+# x = json.loads(r.text)
+# print(x[1:-1])
 
 
 
@@ -52,23 +38,28 @@ for x in data:
 
 
 
+#list
 
+# r = requests.get("http://127.0.0.1:8000/app/list")
+# data = r.json()
+# print('{:>0}  {:>5}  {:>18} {:>12} {:>12}'.format("Code", "Name", "Year", "Semester", "Taught By"))
+# print('---------------------------------------------------------------')
 
+# item = 0
+# counter = 0
+# for x in data:
+#     print(f"{x['code']:5s} {x['name']:20s} {str(x['year']):10s} {str(x['semester']):10s}", end="", flush=True)
 
+#     while True:
+#         if f'teachersname {counter}' not in x:
+#             counter = 0
+#             item += 1
+#             print("\n---------------------------------------------------------------------------")
+#             break
+#         else:
+#             if(counter > 0 ):
+#                 print(f",",end="", flush=True)
+#             print(f"{data[item]['teachersname ' + str(counter)]:2s}", end="", flush=True)
+#             print(f"({data[item]['teachersinit ' + str(counter)]:1s})", end="", flush=True)
+#             counter += 1
 
-
-
-
-
-# json_data = r.json()
-# print(type(json_data))
-
-# data = json.loads(r.text)
-# data = 
-
-
-# x = x.replace(r'\n', '\n')
-# x = x.replace(' ', ''.ljust(8))
-
-
-# print(x[1:-1]
