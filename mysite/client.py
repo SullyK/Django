@@ -48,7 +48,7 @@ while(True):
                 print("Enter 2 to View (rating of all professors)")
                 print("Enter 3 to Average (view average of a certain professor in certain module)")
                 print("Enter 4 to Rate (rate a professor in certain module instance)")
-                print("Enter 5 to logout)")
+                print("Enter 5 to logout")
                 print("enter 6 to exit")
                 choice = input()
             
@@ -101,6 +101,52 @@ while(True):
                     for k,v in json_data.items():
                         # stars = int(v) * '*'
                         print(f"The rating of {k} is {v}")
+
+                elif(choice == '4'):
+                    print("Please enter the Professor's unique ID")
+                    professor_init = input()
+                    print("Please enter the module code")
+                    mod_code = input()
+                    print("Please enter the year")
+                    year = input()
+                    print("Please enter the semester")
+                    sem = input()
+                    print("Please enter the rating you wish to give")
+                    rating = input()
+
+                    payload = {
+                        'csrfmiddlewaretoken': csrftoken,
+                        'professor_init' : professor_init,
+                        'mod_code' : mod_code,
+                        'year' : year,
+                        'sem' : sem,
+                        'rating' : rating
+                    }
+
+                    r = sess.post("http://127.0.0.1:8000/app/rating",data =payload, cookies=cookies)
+                    json_data = json.loads(r.text)
+                    print(json_data)#TODO: remove the speech marks here
+                    #TODO: Verification here.
+
+
+                elif(choice == '5'):
+                    r = sess.get("http://127.0.0.1:8000/app/logout_user",cookies=cookies)
+                    x = json.loads(r.text)
+                    print(x[1:-1])
+                    print("Logging out complete!")
+                    print("Returning you to the main menu!")
+                    break
+                    #TODO: fix this output message in views.
+
+                elif(choice == '6'):
+                    print("Logging you out before exiting....")
+                    r = sess.get("http://127.0.0.1:8000/app/logout_user",cookies=cookies)
+                    x = json.loads(r.text)
+                    print("Logging out complete!")
+
+                    print("Exiting the client, have a very safe day!")
+                    exit(0)
+
 
                 else:
                     print("****************************")
@@ -181,9 +227,9 @@ while(True):
 
 
 
-    # r = s.get("http://127.0.0.1:8000/app/rating")
-    # json_data = json.loads(r.text)
-    # print(json_data[1:-1])
+        # r = s.get("http://127.0.0.1:8000/app/rating")
+        # json_data = json.loads(r.text)
+        # print(json_data[1:-1])
 
 
     #list

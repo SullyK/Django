@@ -134,16 +134,17 @@ class average(APIView):
         return Response(dic)
 
 class rating(APIView):
-    def get(self,request): #TODO: change this to a post request with working data
+    def post(self,request): #TODO: change this to a post request with working data
         #we need to first retrieve, rating, if it doesn't exist make it
         #to do this we need to get the module id since it's rated for that module using the details and WHERE
         #then we need to make an average
-        #finally put that data in
-        mock_professor_id = 'j'
-        mock_module_code = 'aaa'
-        mock_year = '2020' 
-        mock_semester = '1'
-        mock_rating = '2.4'
+        #finally put that data in        mock_professor_id = request.POST.get('professor_init')
+        
+        mock_professor_id = request.POST.get('professor_init')
+        mock_module_code = request.POST.get('mod_code')
+        mock_year = request.POST.get('year')
+        mock_semester = request.POST.get('sem')
+        mock_rating = request.POST.get('rating')
         mock_rating = float(mock_rating)
         
         #TODO: deal with this number bs.
