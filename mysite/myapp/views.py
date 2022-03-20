@@ -68,9 +68,11 @@ class view(APIView):
         teachers_id = 0
         avg = 0
         teacher = Professor.objects.raw("SELECT * FROM myapp_professor")
+        dic = {}
         for i in teacher: 
             teachers_id = i.id
             prof_name = i.name
+            prof_init = i.initals
             rating= Rating.objects.raw("SELECT * FROM myapp_rating WHERE teachers_id = %s",[teachers_id])  
             print('--------------------')   
             for a in rating:
@@ -80,10 +82,12 @@ class view(APIView):
                 continue
             avg /= len(rating)
             avg = round(avg)
+            dic[f'{prof_name}({prof_init})'] = f"{a.rating}"
+
             print(f"rating: {a.rating} for prof: {prof_name}")
-            avg = 0
+            avg = 0 
         # and names now
-        return Response("view page")
+        return Response(dic)
 
 
 

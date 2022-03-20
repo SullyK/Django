@@ -32,9 +32,13 @@ s = requests.Session()
 # x = json.loads(r.text)
 # print(x[1:-1])
 
+# view
 
-
-
+# r = s.get("http://127.0.0.1:8000/app/view")
+# json_data = json.loads(r.text)
+# for key,value in json_data.items():
+#     stars = int(value) * '*'
+#     print(f"The rating of {key} is {stars}")
 
 
 
