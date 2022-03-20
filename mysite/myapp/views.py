@@ -41,7 +41,7 @@ class register(APIView):
 
 class list(APIView):
     def get(self,request):
-        list = []
+        a = []
         dic = {}
         counter = 0
         mod_number = 0
@@ -56,16 +56,11 @@ class list(APIView):
             for z in stored:
                 dic[f'teachers {counter}'] = z.name
                 counter += 1 
-            list.append(copy.deepcopy(dic))
+            a.append(copy.deepcopy(dic))
             dic.clear()
             mod_number += 1
             counter = 0
-        
-        # a = json.dumps(list_of_dic)
-        # print(a)
-        print(type(list))
-        print(list)
-        return Response(list)
+        return Response(a)
 
 class view(APIView):
     def get(self, request):
