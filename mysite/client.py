@@ -21,7 +21,8 @@ print('---------------------------------------------------------------')
 item = 0
 counter = 0
 for x in data:
-    # print(x)
+    print(f"{x['code']:10s} {x['name']:20s} {str(x['year']):10} {str(x['semester']):10s}")
+
     while True:
         if f'teachers {counter}' not in x:
             counter = 0
@@ -29,17 +30,9 @@ for x in data:
             print("-----------")
             break
         else:
-            print(data[item]['teachers ' + str(counter)])
+            print(f"{data[item]['teachers ' + str(counter)]:10s}")
             counter += 1
 
-#     print(str(x['code']).ljust(10),end="", flush=True)
-#     print(str(x['name']).ljust(3),end="", flush=True)
-#     print(str(x['year']).ljust(15),end="", flush=True)
-#     print(str(x['semester']).ljust(8*4))
-#     print(len(str(x['teachers ' + str(int)])))
-#     print('{:>0} {:>15}'.format(x['code'],x['name']))
-
-    # print(f"{x['code']:10s} {x['name']:20s} {str(x['year']):10} {str(x['semester']):10s} {str(x[f'teachers {int}    ']):10s}")
     # int += 1
 
     # print(str(x['name']).ljust(3),end="", flush=True)
