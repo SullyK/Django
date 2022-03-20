@@ -37,20 +37,77 @@ while(True):
 
         r = sess.post("http://127.0.0.1:8000/app/login",data=payload)
         cookies = dict(r.cookies)
+        csrftoken = sess.cookies['csrftoken']
+
         x = json.loads(r.text)
         if x[1:-1] == "Success":
             print("Login Success! :)")
-            print("Please choose one of the following options:")
-            print("Enter 1 for List (list all module instances and professors)")
-            print("Enter 2 to View (rating of all professors)")
-            print("Enter 3 to Average (view average of a certain professor in certain module)")
-            print("Enter 4 to Rate (rate a professor in certain module instance)")
-            print("Enter 5 to logout)")
-            print("enter 6 to exit")
-            choice = input()
+            while(True):
+                print("Please choose one of the following options:")
+                print("Enter 1 for List (list all module instances and professors)")
+                print("Enter 2 to View (rating of all professors)")
+                print("Enter 3 to Average (view average of a certain professor in certain module)")
+                print("Enter 4 to Rate (rate a professor in certain module instance)")
+                print("Enter 5 to logout)")
+                print("enter 6 to exit")
+                choice = input()
+            
+                if(choice == '1'):
+                    r = requests.get("http://127.0.0.1:8000/app/list")
+                    data = r.json()
+                    print('{:>0}  {:>5}  {:>18} {:>12} {:>12}'.format("Code", "Name", "Year", "Semester", "Taught By"))
+                    print('---------------------------------------------------------------')
 
-            if(choice == '1'):
-                
+                    item = 0
+                    counter = 0
+                    for x in data:
+                        print(f"{x['code']:5s} {x['name']:20s} {str(x['year']):10s} {str(x['semester']):10s}", end="", flush=True)
+
+                        while True:
+                            if f'teachersname {counter}' not in x:
+                                counter = 0
+                                item += 1
+                                print("\n---------------------------------------------------------------------------")
+                                break
+                            else:
+                                if(counter > 0 ):
+                                    print(f",",end="", flush=True)
+                                print(f"{data[item]['teachersname ' + str(counter)]:2s}", end="", flush=True)
+                                print(f"({data[item]['teachersinit ' + str(counter)]:1s})", end="", flush=True)
+                                counter += 1
+
+                elif(choice == '2'):
+                    r = sess.get("http://127.0.0.1:8000/app/view")
+                    json_data = json.loads(r.text)
+                    for key,value in json_data.items():
+                        stars = int(value) * '*'
+                        print(f"The rating of {key} is {stars}")
+
+                elif(choice == '3'):
+                    print("Please enter the Professor's unique ID")
+                    professor_init = input()
+                    print("Please enter the module code")
+                    mod_code = input()
+
+                    payload = {
+                        'csrfmiddlewaretoken': csrftoken,
+                        "professor_init" : professor_init,
+                        "module_code" : mod_code
+                    }
+
+
+                    r = sess.post("http://127.0.0.1:8000/app/average", data = payload, cookies=cookies)
+                    json_data = json.loads(r.text)
+                    for k,v in json_data.items():
+                        # stars = int(v) * '*'
+                        print(f"The rating of {k} is {v}")
+
+                else:
+                    print("****************************")
+                    print("Please pick a valid option.")
+                    print("****************************")
+                    continue
+
 
 
         else:
@@ -67,6 +124,10 @@ while(True):
     elif(mm_answer == '3'):
         print("Exiting the client, have a very safe day!")
         break
+
+    else:
+        print("Please select a valid option.")
+        continue
     #Register
 
 
@@ -126,27 +187,4 @@ while(True):
 
 
     #list
-
-    # r = requests.get("http://127.0.0.1:8000/app/list")
-    # data = r.json()
-    # print('{:>0}  {:>5}  {:>18} {:>12} {:>12}'.format("Code", "Name", "Year", "Semester", "Taught By"))
-    # print('---------------------------------------------------------------')
-
-    # item = 0
-    # counter = 0
-    # for x in data:
-    #     print(f"{x['code']:5s} {x['name']:20s} {str(x['year']):10s} {str(x['semester']):10s}", end="", flush=True)
-
-    #     while True:
-    #         if f'teachersname {counter}' not in x:
-    #             counter = 0
-    #             item += 1
-    #             print("\n---------------------------------------------------------------------------")
-    #             break
-    #         else:
-    #             if(counter > 0 ):
-    #                 print(f",",end="", flush=True)
-    #             print(f"{data[item]['teachersname ' + str(counter)]:2s}", end="", flush=True)
-    #             print(f"({data[item]['teachersinit ' + str(counter)]:1s})", end="", flush=True)
-    #             counter += 1
 

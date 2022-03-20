@@ -82,9 +82,9 @@ class view(APIView):
                 continue
             avg /= len(rating)
             avg = round(avg)
-            dic[f'{prof_name}({prof_init})'] = f"{a.rating}"
+            dic[f'{prof_name}({prof_init})'] = f"{avg}"
 
-            print(f"rating: {a.rating} for prof: {prof_name}")
+            print(f"rating: {avg} for prof: {prof_name}")
             avg = 0 
         # and names now
         return Response(dic)
