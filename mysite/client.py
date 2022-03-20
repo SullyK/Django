@@ -40,6 +40,31 @@ s = requests.Session()
 #     stars = int(value) * '*'
 #     print(f"The rating of {key} is {stars}")
 
+# average for eacher
+
+# payload = {
+#     "professor_init" : "j.h",
+#     "module_code" : "xx1"
+# }
+
+
+# r = s.post("http://127.0.0.1:8000/app/average", data = payload)
+# json_data = json.loads(r.text)
+# for key,value in json_data.items():
+#     stars = int(value) * '*'
+#     print(f"The rating of {key} is {stars}")
+
+#TODO: check user is logged in for whatever needs login
+
+#TODO: change the payload to user input
+
+#rate
+
+
+
+r = s.get("http://127.0.0.1:8000/app/rating")
+json_data = json.loads(r.text)
+print(json_data[1:-1])
 
 
 #list

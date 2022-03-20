@@ -22,11 +22,11 @@ class register(APIView):
         #TODO: fix the email check, as it's not working apparently
 
         if (len(check_username) != 0):
-            response = dumps("username already exists in database")
+            response = jsondumps("username already exists in database")
             return Response(response)
 
         if(len(check_email) != 0):
-            response = dumps("email already exists in database")
+            response = jsondumps("email already exists in database")
             return Response(response)
 
 
@@ -35,7 +35,7 @@ class register(APIView):
         user.save()
         
         
-        response = dumps("Account made succesfully")
+        response = json.dumps("Account made succesfully")
         return Response(response)
 
 
@@ -97,18 +97,22 @@ class view(APIView):
 
 
 class average(APIView):
-    def get(self,request):
-        mock_professor_id = 'j'
-        mock_module_code = 'aaa'
+    def post(self,request):
+        
+        mock_professor_id = request.POST.get('professor_init')
+        mock_module_code = request.POST.get('module_code')
         teacher = Professor.objects.raw("SELECT * FROM myapp_professor WHERE initals = %s",[mock_professor_id])
         module= Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s",[mock_module_code])       
         teacher_id = 0
         module_id = 0
         average_math = 0
         total_rows = 0
-
+        teacher_name = 0
+        dic = {}
         for x in teacher:
             teacher_id = x.id
+            teacher_name = x.name
+            teacher_init = x.initals
 
         for x in module:
             module_id = x.id
@@ -125,7 +129,9 @@ class average(APIView):
         average_math /= len(rating)
         average_math = round(average_math)
         print(average_math)
-        return Response("average pageee")
+        dic[f'{teacher_name}({teacher_init})'] = average_math
+
+        return Response(dic)
 
 class rating(APIView):
     def get(self,request): #TODO: change this to a post request with working data
@@ -137,9 +143,11 @@ class rating(APIView):
         mock_module_code = 'aaa'
         mock_year = '2020' 
         mock_semester = '1'
-        mock_rating = '4'
+        mock_rating = '2.4'
         mock_rating = float(mock_rating)
         
+        #TODO: deal with this number bs.
+
         # This shoudl convert it to the a float. If it's an integer, we will rewrite it as a string
         if(mock_rating.is_integer()):
             print(f'do nothing: {mock_rating}')
@@ -148,8 +156,14 @@ class rating(APIView):
         #     if(mock_rating )
         
         teacher = Professor.objects.raw("SELECT * FROM myapp_professor WHERE initals = %s",[mock_professor_id])
+        if(len(teacher) != 1):
+            response = json.dumps("Sorry, there was an error with that teacher's initals.")
+            return Response(response)
         module= Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s AND year = %s AND semester = %s",[mock_module_code,mock_year,mock_semester])        
-        
+        if(len(module) == 0):
+            response = json.dumps("Sorry, that module doesn't exist.")
+            return Response(response)
+
         teacher_id = 0
         module_id = 0
         for x in teacher:
@@ -174,9 +188,11 @@ class rating(APIView):
         # data = Rating.objects.raw("SELECT * FROM myapp_rating WHERE module_id = %s AND teachers_id = %s", [module_id,teacher_id])
         # print(f"rows returned: {len(data)}")
 
-
         
-        return Response("sdfsdfsdfsd")
+        response = "You have succesfully rated the teacher"
+
+        response = json.dumps(response)
+        return Response(response)
 
 
 class test(APIView):
