@@ -25,13 +25,13 @@ class register(APIView):
             response = json.dumps("Error: Username already exists in database, please try again")
             return Response(response)
 
-        if(len(check_email) != 0): #TODO: Fix this email checking logic.
+        if(len(check_email) > 0): #TODO: Fix this email checking logic.
             response = json.dumps("Error: Email already exists in database, please try again")
             return Response(response)
 
 
         # Make account as email and username doesn't exist in db
-        user = User.objects.create_user(username, password, email)
+        user = User.objects.create_user(username = username, password = password, email = email)
         user.save()
         
         
@@ -154,11 +154,18 @@ class rating(APIView):
         mock_year = request.POST.get('year')
         mock_semester = request.POST.get('sem')
         mock_rating = request.POST.get('rating')
-        mock_rating = float(mock_rating)
         
         #TODO: deal with this number bs.
 
-        # This shoudl convert it to the a float. If it's an integer, we will rewrite it as a string
+        if(mock_rating.isdigit()):
+            x = "do nothing"
+        else:             
+            response = json.dumps("That rating is not a number, please try again")
+            return Response(response)
+
+       
+        mock_rating = float(mock_rating)
+ # This shoudl convert it to the a float. If it's an integer, we will rewrite it as a string
         if(mock_rating.is_integer()):
             print(f'do nothing: {mock_rating}')
             mock_rating = str(mock_rating)
@@ -166,7 +173,7 @@ class rating(APIView):
         #     if(mock_rating )
         
         teacher = Professor.objects.raw("SELECT * FROM myapp_professor WHERE initals = %s",[mock_professor_id])
-        if(len(teacher) != 1):
+        if(len(teacher) == 0):
             response = json.dumps("That teacher doesn't exist, please try again")
             return Response(response)
         module= Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s AND year = %s AND semester = %s",[mock_module_code,mock_year,mock_semester])        

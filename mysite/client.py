@@ -102,21 +102,25 @@ while(True):
 
                     r = sess.post("http://127.0.0.1:8000/app/average", data = payload, cookies=cookies)
                     json_data = json.loads(r.text)
-                    
-                    if(json_data[1:-1]) == ("That teacher doesn't exist, please try again"):
-                        print("*********************")
-                        print(json_data[1:-1])
-                        print("*********************")
-                        print("Taking you back to the menu")
+                    if(type(json_data) is dict):
+                        x = "do nothing"
 
-                        continue
+                    else:
+                        text = json_data[1:-1]
+                        if(text) == ("That teacher doesn't exist, please try again"):
+                            print("*********************")
+                            print(text)
+                            print("*********************")
+                            print("Taking you back to the menu")
+                            continue
 
-                    if(json_data[1:-1]) == ("That module doesn't exist, please try again"):
-                        print("*********************")
-                        print("That module doesn't exist or isn't associated with given teacher id")
-                        print("*********************")
-                        print("Taking you back to the menu")
-                        continue
+                        text2 = json_data[1:-1]
+                        if(text2) == ("That module doesn't exist, please try again"):
+                            print("*********************")
+                            print("That module doesn't exist or isn't associated with given teacher id")
+                            print("*********************")
+                            print("Taking you back to the menu")
+                            continue
 
                     for k,v in json_data.items():
                         stars = int(v) * '*'
@@ -145,6 +149,9 @@ while(True):
 
                     r = sess.post("http://127.0.0.1:8000/app/rating",data =payload, cookies=cookies)
                     json_data = json.loads(r.text)
+                    if(json_data[1:-1] == "That rating is not a number, please try again"):
+                        print("That rating is not a number, please try again")
+                        continue
                     if(json_data == "That teacher doesn't exist, please try again"):
                         print("That teacher doesn't exist, please try again")
                         continue
@@ -153,18 +160,16 @@ while(True):
                     elif(json_data == "Rating has to be between 1 and 5"):
                         print("Sorry, Rating has to be between 1 and 5")
                         continue
-                    print(json_data)#TODO: remove the speech marks here
                     
-                    #TODO: Verification here.
-
                 elif(choice == '5'):
                     r = sess.get("http://127.0.0.1:8000/app/logout_user",cookies=cookies)
                     x = json.loads(r.text)
-                    print(x[1:-1])
+                    for i in range(3):
+                        print("............")
+
                     print("Logging out complete!")
                     print("Returning you to the main menu!")
                     break
-                    #TODO: fix this output message in views.
 
                 elif(choice == '6'):
                     print("Logging you out before exiting....")
