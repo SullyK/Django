@@ -102,7 +102,15 @@ class average(APIView):
         mock_professor_id = request.POST.get('professor_init')
         mock_module_code = request.POST.get('module_code')
         teacher = Professor.objects.raw("SELECT * FROM myapp_professor WHERE initals = %s",[mock_professor_id])
-        module= Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s",[mock_module_code])       
+        if len(teacher) == 0:
+            response = json.dumps("That teacher doesn't exist, please try again")
+            return Response(response)
+        
+        module = Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s",[mock_module_code])  
+        if len(module) == 0:    
+            response = json.dumps("That module doesn't exist, please try again")
+            return Response(response)
+ 
         teacher_id = 0
         module_id = 0
         average_math = 0

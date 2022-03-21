@@ -37,12 +37,13 @@ while(True):
 
         r = sess.post("http://127.0.0.1:8000/app/login",data=payload)
         cookies = dict(r.cookies)
-        csrftoken = sess.cookies['csrftoken']
 
         x = json.loads(r.text)
         if x[1:-1] == "Success":
+            csrftoken = sess.cookies['csrftoken']
             print("Login Success! :)")
             while(True):
+                print("▬▬ι═════════════════════════-   -════════════════════════ι▬▬")
                 print("Please choose one of the following options:")
                 print("Enter 1 for List (list all module instances and professors)")
                 print("Enter 2 to View (rating of all professors)")
@@ -50,6 +51,8 @@ while(True):
                 print("Enter 4 to Rate (rate a professor in certain module instance)")
                 print("Enter 5 to logout")
                 print("enter 6 to exit")
+                print("▬▬ι═════════════════════════-   -════════════════════════ι▬▬")
+
                 choice = input()
             
                 if(choice == '1'):
@@ -98,8 +101,24 @@ while(True):
 
                     r = sess.post("http://127.0.0.1:8000/app/average", data = payload, cookies=cookies)
                     json_data = json.loads(r.text)
+                    
+                    if(json_data[1:-1]) == ("That teacher doesn't exist, please try again"):
+                        print("*********************")
+                        print(json_data[1:-1])
+                        print("*********************")
+                        print("Taking you back to the menu")
+
+                        continue
+
+                    if(json_data[1:-1]) == ("That module doesn't exist, please try again"):
+                        print("*********************")
+                        print("That module doesn't exist or isn't associated with given teacher id")
+                        print("*********************")
+                        print("Taking you back to the menu")
+                        continue
+
                     for k,v in json_data.items():
-                        # stars = int(v) * '*'
+                        stars = int(v) * '*'
                         print(f"The rating of {k} is {v}")
 
                 elif(choice == '4'):
