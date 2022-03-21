@@ -135,6 +135,7 @@ class average(APIView):
         
         
         average_math /= len(rating)
+        #TODO: add error checking here for 0 numbers so it doesn't explode
         average_math = round(average_math)
         print(average_math)
         dic[f'{teacher_name}({teacher_init})'] = average_math
@@ -166,11 +167,15 @@ class rating(APIView):
         
         teacher = Professor.objects.raw("SELECT * FROM myapp_professor WHERE initals = %s",[mock_professor_id])
         if(len(teacher) != 1):
-            response = json.dumps("Sorry, there was an error with that teacher's initals.")
+            response = json.dumps("That teacher doesn't exist, please try again")
             return Response(response)
         module= Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s AND year = %s AND semester = %s",[mock_module_code,mock_year,mock_semester])        
         if(len(module) == 0):
-            response = json.dumps("Sorry, that module doesn't exist.")
+            response = json.dumps("Sorry, there doesn't exist a module with that code or year or rating.")
+            return Response(response)
+
+        if(float(mock_rating) < 1.0 or float(mock_rating) > 5.0):
+            response = json.dumps("Sorry, Rating has to be between 1 and 5")
             return Response(response)
 
         teacher_id = 0

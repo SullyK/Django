@@ -85,6 +85,7 @@ while(True):
                     for key,value in json_data.items():
                         stars = int(value) * '*'
                         print(f"The rating of {key} is {stars}")
+            #TODO: check if the two terms are mashed together in the average for a module instance
 
                 elif(choice == '3'):
                     print("Please enter the Professor's unique ID")
@@ -144,9 +145,17 @@ while(True):
 
                     r = sess.post("http://127.0.0.1:8000/app/rating",data =payload, cookies=cookies)
                     json_data = json.loads(r.text)
+                    if(json_data == "That teacher doesn't exist, please try again"):
+                        print("That teacher doesn't exist, please try again")
+                        continue
+                    elif(json_data == "Sorry, there doesn't exist a module with that code, year and rating"):
+                        print("Sorry, there doesn't exist a module with that code, year and rating")
+                    elif(json_data == "Rating has to be between 1 and 5"):
+                        print("Sorry, Rating has to be between 1 and 5")
+                        continue
                     print(json_data)#TODO: remove the speech marks here
+                    
                     #TODO: Verification here.
-
 
                 elif(choice == '5'):
                     r = sess.get("http://127.0.0.1:8000/app/logout_user",cookies=cookies)
