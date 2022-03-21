@@ -16,6 +16,8 @@ def validate_legal_semester(value):
 class Professor(models.Model):
     name = models.CharField(max_length=34)
     initals = models.CharField(max_length=5) # change this up later
+    def __str__(self) -> str:
+        return str(self.name + ' ' + '(' + self.initals + ')')
 
 class Module(models.Model):
     name = models.CharField(max_length=30)
