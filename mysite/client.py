@@ -59,7 +59,7 @@ while(True):
                     r = requests.get("http://127.0.0.1:8000/app/list")
                     data = r.json()
                     print('{:>0}  {:>5}  {:>18} {:>12} {:>12}'.format("Code", "Name", "Year", "Semester", "Taught By"))
-                    print('---------------------------------------------------------------')
+                    print('════════════════════════════════════════════════════════════════════')
 
                     item = 0
                     counter = 0
@@ -70,7 +70,7 @@ while(True):
                             if f'teachersname {counter}' not in x:
                                 counter = 0
                                 item += 1
-                                print("\n---------------------------------------------------------------------------")
+                                print("\n════════════════════════════════════════════════════════════════════")
                                 break
                             else:
                                 if(counter > 0 ):
@@ -160,7 +160,7 @@ while(True):
                     elif(json_data == "Rating has to be between 1 and 5"):
                         print("Sorry, Rating has to be between 1 and 5")
                         continue
-                    
+
                 elif(choice == '5'):
                     r = sess.get("http://127.0.0.1:8000/app/logout_user",cookies=cookies)
                     x = json.loads(r.text)
