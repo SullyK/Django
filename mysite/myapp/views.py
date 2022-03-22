@@ -81,7 +81,22 @@ class view(APIView):
             if(len(rating) == 0):
                 continue
             avg /= len(rating)
-            avg = round(avg + 0.5)
+            if(avg > 1 and avg <=1.49):
+                avg = 1
+            elif(avg > 1.49 and avg <= 2.0):
+                avg = 2
+            elif(avg > 2.0 and avg <= 2.49):
+                avg = 2
+            elif(avg > 2.49 and avg <= 3.0):
+                avg = 3
+            elif(avg > 3.0 and avg <= 3.49):
+                avg = 3
+            elif(avg > 3.49 and avg <= 4.0):
+                avg = 4
+            elif(avg > 4.0 and avg <= 4.49):
+                avg = 4
+            elif(avg > 4.49 and avg <= 5.0):
+                avg = 5
             dic[f'{prof_name}({prof_init})'] = f"{avg}"
 
             print(f"rating: {avg} for prof: {prof_name}")
@@ -136,7 +151,23 @@ class average(APIView):
         
         average_math /= total_rows
         #TODO: add error checking here for 0 numbers so it doesn't explode
-        average_math = round(average_math + 0.5)
+        if(average_math > 1 and average_math <=1.49):
+            average_math = 1
+        elif(average_math > 1.49 and average_math <= 2.0):
+            average_math = 2
+        elif(average_math > 2.0 and average_math <= 2.49):
+            average_math = 2
+        elif(average_math > 2.49 and average_math <= 3.0):
+            average_math = 3
+        elif(average_math > 3.0 and average_math <= 3.49):
+            average_math = 3
+        elif(average_math > 3.49 and average_math <= 4.0):
+            average_math = 4
+        elif(average_math > 4.0 and average_math <= 4.49):
+            average_math = 4
+        elif(average_math > 4.49 and average_math <= 5.0):
+            average_math = 5
+
         print(average_math)
         dic[f'{teacher_name}({teacher_init})'] = average_math
 

@@ -2,7 +2,6 @@ from operator import mod
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-import datetime
 from django import forms 
 
 def validate_legal_semester(value):
@@ -36,12 +35,8 @@ class Module(models.Model):
 
 
 class Rating(models.Model):
-    rating = models.IntegerField() # I should make this from 0 - 5 or 1 - 5, however the heck he wants
+    rating = models.IntegerField()
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
     teachers = models.ForeignKey(Professor, on_delete=models.CASCADE)
     def __str__(self) -> str:
-        mod_name = ""
-        mod_teacher = ""
-        
-
         return str("Rated " + ' ' + str(self.rating) + ',' + self.teachers.name + ' ' +  self.module.name + ' ' + self.module.code + ' ' + 'Semester ' +  str(self.module.semester) + ' Year ' +  ' ' + str(self.module.year)) 
