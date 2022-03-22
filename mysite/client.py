@@ -81,7 +81,7 @@ while(True):
                     r = sess.get("http://127.0.0.1:8000/api/view")
                     json_data = json.loads(r.text)
                     for key,value in json_data.items():
-                        stars = int(value) * '*'
+                        stars = int(float(value)) * '*'
                         print(f"The rating of {key} is {stars}")
             #TODO: check if the two terms are mashed together in the average for a module instance
 
@@ -121,8 +121,8 @@ while(True):
                             continue
 
                     for k,v in json_data.items():
-                        stars = int(v) * '*'
-                        print(f"The rating of {k} is {v}")
+                        stars = int(float(v)) * '*'
+                        print(f"The rating of {k} is {stars}")
 
                 elif(choice == 'rate'):
                     print("Please enter the Professor's unique ID")
@@ -147,6 +147,9 @@ while(True):
 
                     r = sess.post("http://127.0.0.1:8000/api/rating",data =payload, cookies=cookies)
                     json_data = json.loads(r.text)
+                    if(json_data[1:-1] == "Please login"):
+                        print("Please login, not currently logged in.")
+                        continue
                     if(json_data[1:-1] == "That rating is not a number, please try again"):
                         print("That rating is not a number, please try again")
                         continue

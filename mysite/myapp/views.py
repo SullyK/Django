@@ -180,68 +180,73 @@ class rating(APIView):
         #to do this we need to get the module id since it's rated for that module using the details and WHERE
         #then we need to make an average
         #finally put that data in        mock_professor_id = request.POST.get('professor_init')
-        
-        mock_professor_id = request.POST.get('professor_init')
-        mock_module_code = request.POST.get('mod_code')
-        mock_year = request.POST.get('year')
-        mock_semester = request.POST.get('sem')
-        mock_rating = request.POST.get('rating')
-        
-        #TODO: deal with this number bs.
+        if request.user.is_authenticated:
+            mock_professor_id = request.POST.get('professor_init')
+            mock_module_code = request.POST.get('mod_code')
+            mock_year = request.POST.get('year')
+            mock_semester = request.POST.get('sem')
+            mock_rating = request.POST.get('rating')
+            
+            #TODO: deal with this number bs.
 
-        if(mock_rating.isdigit()):
-            x = "do nothing"
-        else:             
-            response = json.dumps("That rating is not a number, please try again")
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            if(mock_rating.isdigit()):
+                x = "do nothing"
+            else:             
+                response = json.dumps("That rating is not a number, please try again")
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-       
-        mock_rating = float(mock_rating)
- # This shoudl convert it to the a float. If it's an integer, we will rewrite it as a string
-        if(mock_rating.is_integer()):
-            print(f'do nothing: {mock_rating}')
-            mock_rating = str(mock_rating)
-        # else:
-        #     if(mock_rating )
         
-        teacher = Professor.objects.raw("SELECT * FROM myapp_professor WHERE initals = %s",[mock_professor_id])
-        if(len(teacher) == 0):
-            response = json.dumps("That teacher doesn't exist, please try again")
+            mock_rating = float(mock_rating)
+    # This shoudl convert it to the a float. If it's an integer, we will rewrite it as a string
+            if(mock_rating.is_integer()):
+                print(f'do nothing: {mock_rating}')
+                mock_rating = str(mock_rating)
+            # else:
+            #     if(mock_rating )
+            
+            teacher = Professor.objects.raw("SELECT * FROM myapp_professor WHERE initals = %s",[mock_professor_id])
+            if(len(teacher) == 0):
+                response = json.dumps("That teacher doesn't exist, please try again")
+                return Response(response,status = status.HTTP_400_BAD_REQUEST)
+            module= Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s AND year = %s AND semester = %s",[mock_module_code,mock_year,mock_semester])        
+            if(len(module) == 0):
+                response = json.dumps("Sorry, there doesn't exist a module with that code or year or rating.")
+                return Response(response,status = status.HTTP_400_BAD_REQUEST)
+
+            if(float(mock_rating) < 1.0 or float(mock_rating) > 5.0):
+                response = json.dumps("Sorry, Rating has to be between 1 and 5")
+                return Response(response,status = status.HTTP_400_BAD_REQUEST)
+
+            teacher_id = 0
+            module_id = 0
+            for x in teacher:
+                teacher_id = x.id
+                print(f"teacher_id = {x.id}")
+            
+            for x in module:
+                module_id = x.id
+                print((f"module_id = {x.id}"))
+            
+
+            # so now we got the module and professor name id
+            # we need to query the db in rating and check if they exist.
+
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO myapp_rating(rating, module_id, teachers_id) VALUES (%s, %s, %s)", [mock_rating,module_id,teacher_id]
+                    )
+            
+            
+            response = "You have succesfully rated the teacher"
+
+            response = json.dumps(response)
+            return Response(response,status = status.HTTP_200_OK)
+
+        else:
+            response = "Please login"
+            response = json.dumps(response)
             return Response(response,status = status.HTTP_400_BAD_REQUEST)
-        module= Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s AND year = %s AND semester = %s",[mock_module_code,mock_year,mock_semester])        
-        if(len(module) == 0):
-            response = json.dumps("Sorry, there doesn't exist a module with that code or year or rating.")
-            return Response(response,status = status.HTTP_400_BAD_REQUEST)
-
-        if(float(mock_rating) < 1.0 or float(mock_rating) > 5.0):
-            response = json.dumps("Sorry, Rating has to be between 1 and 5")
-            return Response(response,status = status.HTTP_400_BAD_REQUEST)
-
-        teacher_id = 0
-        module_id = 0
-        for x in teacher:
-            teacher_id = x.id
-            print(f"teacher_id = {x.id}")
-        
-        for x in module:
-            module_id = x.id
-            print((f"module_id = {x.id}"))
-        
-
-        # so now we got the module and professor name id
-        # we need to query the db in rating and check if they exist.
-
-
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "INSERT INTO myapp_rating(rating, module_id, teachers_id) VALUES (%s, %s, %s)", [mock_rating,module_id,teacher_id]
-                )
-        
-        
-        response = "You have succesfully rated the teacher"
-
-        response = json.dumps(response)
-        return Response(response,status = status.HTTP_200_OK)
 
 
 
