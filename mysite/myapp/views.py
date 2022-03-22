@@ -81,7 +81,7 @@ class view(APIView):
             if(len(rating) == 0):
                 continue
             avg /= len(rating)
-            avg = round(avg)
+            avg = round(avg + 0.5)
             dic[f'{prof_name}({prof_init})'] = f"{avg}"
 
             print(f"rating: {avg} for prof: {prof_name}")
@@ -134,9 +134,9 @@ class average(APIView):
 
         
         
-        average_math /= len(rating)
+        average_math /= total_rows
         #TODO: add error checking here for 0 numbers so it doesn't explode
-        average_math = round(average_math)
+        average_math = round(average_math + 0.5)
         print(average_math)
         dic[f'{teacher_name}({teacher_init})'] = average_math
 

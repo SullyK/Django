@@ -58,13 +58,13 @@ while(True):
                 if(choice == '1'):
                     r = requests.get("http://127.0.0.1:8000/app/list")
                     data = r.json()
-                    print('{:>0}  {:>5}  {:>18} {:>12} {:>12}'.format("Code", "Name", "Year", "Semester", "Taught By"))
+                    print('{:>0}  {:>5}  {:>25} {:>12} {:>12}'.format("Code", "Name", "Year", "Semester", "Taught By"))
                     print('════════════════════════════════════════════════════════════════════')
 
                     item = 0
                     counter = 0
                     for x in data:
-                        print(f"{x['code']:5s} {x['name']:20s} {str(x['year']):10s} {str(x['semester']):10s}", end="", flush=True)
+                        print(f"{x['code']:5s} {x['name']:28s} {str(x['year']):10s} {str(x['semester']):10s}", end="", flush=True)
 
                         while True:
                             if f'teachersname {counter}' not in x:
