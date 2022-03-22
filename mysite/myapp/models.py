@@ -14,7 +14,7 @@ def validate_legal_semester(value):
 
 class Professor(models.Model):
     name = models.CharField(max_length=34)
-    initals = models.CharField(max_length=8) # change this up later
+    initals = models.CharField(max_length=8,unique=True) 
     def __str__(self) -> str:
         return str(self.name + ' ' + self.initals )
 
@@ -28,10 +28,7 @@ class Module(models.Model):
         empty = ""
         for x in self.teachers.all():
             empty += x.name + ',' + x.initals + ' '
-
-        
         return str(self.name  + ',' + self.code + ' ' +  'semester ' + str(self.semester) + ' ' + str(self.year) + ' ' + empty )
-        empty = ""
 
 
 class Rating(models.Model):
