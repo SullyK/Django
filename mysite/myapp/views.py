@@ -10,6 +10,7 @@ from django.db import connection
 from django.contrib.auth.models import User
 import json
 import copy
+from rest_framework import status
 
 
 class register(APIView):
@@ -23,11 +24,11 @@ class register(APIView):
 
         if (len(check_username) != 0):
             response = json.dumps("Error: Username already exists in database, please try again")
-            return Response(response)
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
         if(len(check_email) > 0): #TODO: Fix this email checking logic.
             response = json.dumps("Error: Email already exists in database, please try again")
-            return Response(response)
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)
 
 
         # Make account as email and username doesn't exist in db
@@ -119,12 +120,12 @@ class average(APIView):
         teacher = Professor.objects.raw("SELECT * FROM myapp_professor WHERE initals = %s",[mock_professor_id])
         if len(teacher) == 0:
             response = json.dumps("That teacher doesn't exist, please try again")
-            return Response(response)
+            return Response(response,status = status.HTTP_400_BAD_REQUEST)
         
         module = Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s",[mock_module_code])  
         if len(module) == 0:    
             response = json.dumps("That module doesn't exist, please try again")
-            return Response(response)
+            return Response(response,status = status.HTTP_400_BAD_REQUEST)
  
         teacher_id = 0
         module_id = 0
@@ -171,7 +172,7 @@ class average(APIView):
         print(average_math)
         dic[f'{teacher_name}({teacher_init})'] = average_math
 
-        return Response(dic)
+        return Response(dic,status = status.HTTP_200_OK)
 
 class rating(APIView):
     def post(self,request): #TODO: change this to a post request with working data
@@ -192,7 +193,7 @@ class rating(APIView):
             x = "do nothing"
         else:             
             response = json.dumps("That rating is not a number, please try again")
-            return Response(response)
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
        
         mock_rating = float(mock_rating)
@@ -206,15 +207,15 @@ class rating(APIView):
         teacher = Professor.objects.raw("SELECT * FROM myapp_professor WHERE initals = %s",[mock_professor_id])
         if(len(teacher) == 0):
             response = json.dumps("That teacher doesn't exist, please try again")
-            return Response(response)
+            return Response(response,status = status.HTTP_400_BAD_REQUEST)
         module= Module.objects.raw("SELECT * FROM myapp_module WHERE code = %s AND year = %s AND semester = %s",[mock_module_code,mock_year,mock_semester])        
         if(len(module) == 0):
             response = json.dumps("Sorry, there doesn't exist a module with that code or year or rating.")
-            return Response(response)
+            return Response(response,status = status.HTTP_400_BAD_REQUEST)
 
         if(float(mock_rating) < 1.0 or float(mock_rating) > 5.0):
             response = json.dumps("Sorry, Rating has to be between 1 and 5")
-            return Response(response)
+            return Response(response,status = status.HTTP_400_BAD_REQUEST)
 
         teacher_id = 0
         module_id = 0
@@ -236,75 +237,12 @@ class rating(APIView):
                 "INSERT INTO myapp_rating(rating, module_id, teachers_id) VALUES (%s, %s, %s)", [mock_rating,module_id,teacher_id]
                 )
         
-        # # get the avg of these
-        # data = Rating.objects.raw("SELECT * FROM myapp_rating WHERE module_id = %s AND teachers_id = %s", [module_id,teacher_id])
-        # print(f"rows returned: {len(data)}")
-
         
         response = "You have succesfully rated the teacher"
 
         response = json.dumps(response)
-        return Response(response)
+        return Response(response,status = status.HTTP_200_OK)
 
-
-class test(APIView):
-    def get(self,request):
-        mock_prof_id = 'j' #id for professor
-        mock_mod_id = 'comp'
-        pro_id = Professor.objects.raw('SELECT id FROM myapp_professor WHERE initals = %s',[mock_prof_id])
-        pro_name = 0
-        mod_id = Module.objects.raw('SELECT id FROM myapp_module WHERE code = %s',[mock_mod_id])
-        mod_name = 0 
-        mod_code = 0
-        pro_test = 0
-        mod_test = 0
-        pro_initals = 0
-        for x in pro_id:
-            pro_test = x.id
-            pro_name = x.name
-            pro_initals = x.initals
-        for x in mod_id:
-            mod_test = x.id
-            mod_name = x.name
-            mod_code =x.code
-        
-
-
-        # print(p.id)
-        # for x in p.id:
-        print(f"professor id: {pro_test}")
-        print(f"module id: {mod_test}")
-
-        returned = Rating.objects.raw('SELECT * FROM myapp_rating WHERE module_id = %s AND teachers_id = %s', [mod_test,pro_test] )
-        for x in returned:
-            print(x.rating)
-            reponse = {f"The rating of {pro_name} ({pro_initals}) in module {mod_name} ({mod_code}) is {pro_test}"}
-        # for x in returned:
-        #     print(x)
-        # for x in returned:
-        #     if(mock_prof_id == x.teachers.initals and mock_module == x.module.id):
-        #         print(f'{x.teachers.initals} teaching {x.module.id} a has rating of {x.rating}')
-        # if len((returned)) > 1:
-        #     print("error: too many returned results from query...")
-        # elif(len((returned) < 1)):
-        #     print("error: You need at least 1 returned result from the DB")
-        # probably should do try and assert exception handling 
-        # print(returned)
-
-            # for rating in returned:
-            #     print(rating.module.name)
-            #     print(rating.teachers.name)
-            #     print(rating.rating)
-            #     print('---------------------')
-            
-            
-        
-     # get list of all staff IDs
-        # print(staff)
-        # list = []
-
-        # serializer = ProfessorSerializer(data, many=True)
-        return Response(reponse)
 
 
 class login(APIView):
@@ -318,30 +256,25 @@ class login(APIView):
             response = "Success" 
         else: 
             response = "Fail"
-
+            response = json.dumps(response)
+            return Response(response,status = status.HTTP_400_BAD_REQUEST)
         response = json.dumps(response)
         print(type(response))
-        return Response(response)
+        return Response(response,status = status.HTTP_200_OK)
 # test my login
 
-class check_user(APIView):
-    def get(self,request):
-        if request.user.is_authenticated:
-            print (request.user.id)
-            response = f"You are {request.id}"
-        else:
-            response = "you aren't logged in"
-        response = json.dumps(response)
-        return Response(response)
 
 class logout_user(APIView):
     def get(self,request):
         if request.user.is_authenticated:
             response = f"you are trying to logout,{request.user}"
             logout(request)
-            response += " + logged you out, succesfully"
+            response += "...logged you out, succesfully"
+            response = json.dumps(response)
+            return Response(response,status = status.HTTP_200_OK)
+
         else:
             response = "you werent logged in."
-        response = json.dumps(response)
-        return Response(response)
-    
+            response = json.dumps(response)
+            return Response(response,status = status.HTTP_400_BAD_REQUEST)
+
