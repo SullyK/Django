@@ -2,29 +2,27 @@ from urllib import response
 import requests
 import json
 
-
-
 while(True):
 
     print("Please choose one of the following options:")
-    print("Enter 1 to Register")
-    print("Enter 2 to Login")
-    print("Enter 3 to Exit")
+    print("Enter register to Register")
+    print("Enter login to Login")
+    print("Enter exit to Exit")
     mm_answer = input()
-    if(mm_answer == '1'):
+    if(mm_answer == 'register'):
         print("Registering!")
         username = input("Enter Username:")
         password = input("Enter Password:")
         email = input("Enter Email:")
         payload = {'username': username, 'password': password, "email": email}
-        r = requests.post("http://127.0.0.1:8000/app/register",data=payload)
+        r = requests.post("http://127.0.0.1:8000/api/register",data=payload)
         x = json.loads(r.text)
         print(x[1:-1])
         print("Taking you back to the main menu")
         print("---------------------------------")
         continue
 
-    elif(mm_answer == '2'):
+    elif(mm_answer == 'login'):
         print("Logging in!")
         sess = requests.Session()  #Create a session to store cookies.
         username = input("Enter Username:")
@@ -35,7 +33,7 @@ while(True):
         'password': password,
     }
 
-        r = sess.post("http://127.0.0.1:8000/app/login",data=payload)
+        r = sess.post("http://127.0.0.1:8000/api/login",data=payload)
         cookies = dict(r.cookies)
 
         x = json.loads(r.text)
@@ -45,18 +43,18 @@ while(True):
             while(True):
                 print("▬▬ι═════════════════════════-   -════════════════════════ι▬▬")
                 print("Please choose one of the following options:")
-                print("Enter 1 for List (list all module instances and professors)")
-                print("Enter 2 to View (rating of all professors)")
-                print("Enter 3 to Average (view average of a certain professor in certain module)")
-                print("Enter 4 to Rate (rate a professor in certain module instance)")
-                print("Enter 5 to logout")
-                print("enter 6 to exit")
+                print("Enter list for List (list all module instances and professors)")
+                print("Enter view to View (rating of all professors)")
+                print("Enter average to Average (view average of a certain professor in certain module)")
+                print("Enter rate to Rate (rate a professor in certain module instance)")
+                print("Enter logout to logout")
+                print("enter exit to exit")
                 print("▬▬ι═════════════════════════-   -════════════════════════ι▬▬")
 
                 choice = input()
             
-                if(choice == '1'):
-                    r = requests.get("http://127.0.0.1:8000/app/list")
+                if(choice == 'list'):
+                    r = requests.get("http://127.0.0.1:8000/api/list")
                     data = r.json()
                     print('{:>0}  {:>5}  {:>25} {:>12} {:>12}'.format("Code", "Name", "Year", "Semester", "Taught By"))
                     print('════════════════════════════════════════════════════════════════════')
@@ -79,15 +77,15 @@ while(True):
                                 print(f"({data[item]['teachersinit ' + str(counter)]:1s})", end="", flush=True)
                                 counter += 1
 
-                elif(choice == '2'):
-                    r = sess.get("http://127.0.0.1:8000/app/view")
+                elif(choice == 'view'):
+                    r = sess.get("http://127.0.0.1:8000/api/view")
                     json_data = json.loads(r.text)
                     for key,value in json_data.items():
                         stars = int(value) * '*'
                         print(f"The rating of {key} is {stars}")
             #TODO: check if the two terms are mashed together in the average for a module instance
 
-                elif(choice == '3'):
+                elif(choice == 'average'):
                     print("Please enter the Professor's unique ID")
                     professor_init = input()
                     print("Please enter the module code")
@@ -100,7 +98,7 @@ while(True):
                     }
 
 
-                    r = sess.post("http://127.0.0.1:8000/app/average", data = payload, cookies=cookies)
+                    r = sess.post("http://127.0.0.1:8000/api/average", data = payload, cookies=cookies)
                     json_data = json.loads(r.text)
                     if(type(json_data) is dict):
                         x = "do nothing"
@@ -126,7 +124,7 @@ while(True):
                         stars = int(v) * '*'
                         print(f"The rating of {k} is {v}")
 
-                elif(choice == '4'):
+                elif(choice == 'rate'):
                     print("Please enter the Professor's unique ID")
                     professor_init = input()
                     print("Please enter the module code")
@@ -147,7 +145,7 @@ while(True):
                         'rating' : rating
                     }
 
-                    r = sess.post("http://127.0.0.1:8000/app/rating",data =payload, cookies=cookies)
+                    r = sess.post("http://127.0.0.1:8000/api/rating",data =payload, cookies=cookies)
                     json_data = json.loads(r.text)
                     if(json_data[1:-1] == "That rating is not a number, please try again"):
                         print("That rating is not a number, please try again")
@@ -161,8 +159,8 @@ while(True):
                         print("Sorry, Rating has to be between 1 and 5")
                         continue
 
-                elif(choice == '5'):
-                    r = sess.get("http://127.0.0.1:8000/app/logout_user",cookies=cookies)
+                elif(choice == 'logout'):
+                    r = sess.get("http://127.0.0.1:8000/api/logout",cookies=cookies)
                     x = json.loads(r.text)
                     for i in range(3):
                         print("............")
@@ -171,9 +169,9 @@ while(True):
                     print("Returning you to the main menu!")
                     break
 
-                elif(choice == '6'):
+                elif(choice == 'exit'):
                     print("Logging you out before exiting....")
-                    r = sess.get("http://127.0.0.1:8000/app/logout_user",cookies=cookies)
+                    r = sess.get("http://127.0.0.1:8000/api/logout",cookies=cookies)
                     x = json.loads(r.text)
                     print("Logging out complete!")
 
@@ -193,14 +191,7 @@ while(True):
             print("Login Failed. Taking you back to the main menu.")
 
 
-
-
-
-
-
-
-
-    elif(mm_answer == '3'):
+    elif(mm_answer == 'exit'):
         print("Exiting the client, have a very safe day!")
         break
 
@@ -218,7 +209,7 @@ while(True):
     #     'password': 'left4dead2'
     # }
 
-    # r = s.post("http://127.0.0.1:8000/app/login",data=payload)
+    # r = s.post("http://127.0.0.1:8000/api/login",data=payload)
     # cookies = dict(r.cookies)
     # x = json.loads(r.text)
     # print(x[1:-1])
@@ -226,13 +217,13 @@ while(True):
 
     # # logout
 
-    # r = s.get("http://127.0.0.1:8000/app/logout_user",cookies=cookies)
+    # r = s.get("http://127.0.0.1:8000/api/logout_user",cookies=cookies)
     # x = json.loads(r.text)
     # print(x[1:-1])
 
     # view
 
-    # r = s.get("http://127.0.0.1:8000/app/view")
+    # r = s.get("http://127.0.0.1:8000/api/view")
     # json_data = json.loads(r.text)
     # for key,value in json_data.items():
     #     stars = int(value) * '*'
@@ -246,7 +237,7 @@ while(True):
     # }
 
 
-    # r = s.post("http://127.0.0.1:8000/app/average", data = payload)
+    # r = s.post("http://127.0.0.1:8000/api/average", data = payload)
     # json_data = json.loads(r.text)
     # for key,value in json_data.items():
     #     stars = int(value) * '*'
@@ -260,7 +251,7 @@ while(True):
 
 
 
-        # r = s.get("http://127.0.0.1:8000/app/rating")
+        # r = s.get("http://127.0.0.1:8000/api/rating")
         # json_data = json.loads(r.text)
         # print(json_data[1:-1])
 
